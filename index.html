@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Air Quality Monitoring Dashboard</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css" />
+
+    <!-- Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+</head>
+<body class="theme-dark">
+    <div class="dashboard-shell">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-circle">AQ</div>
+                <div class="logo-text">
+                    <span class="logo-title">AQMPS</span>
+                    <span class="logo-sub">Realtime Monitor</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active">
+                    <span class="nav-dot"></span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-dot"></span>
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-dot"></span>
+                    <span>Sensors</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-dot"></span>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p>ESP32 • MQ135 • DHT11</p>
+                <p class="fw-light">Components Used</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-area">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <h1>Air Quality Monitoring System</h1>
+                    <p class="header-subtitle">
+                        Live environment metrics, updated every 20 seconds
+                    </p>
+                </div>
+                <div class="header-right">
+                    <div class="header-meta">
+                        <span id="current-time" class="time-display"></span>
+                        <span id="connection-status" class="status-pill status-connected">
+                            ● Connected
+                        </span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Dashboard -->
+            <main class="dashboard-main">
+                <!-- Status Overview Cards -->
+                <section class="status-overview">
+                    <div class="card status-card neon-border">
+                        <div class="card-header">
+                            <div>
+                                <h3>Air Quality Status</h3>
+                                <p class="card-subtitle">Based on latest AQI reading</p>
+                            </div>
+                            <div class="status-indicator" id="overall-status" data-status="good">
+                                Good
+                            </div>
+                        </div>
+                        <div class="card-body status-body">
+                            <div class="gauge-container">
+                                <canvas id="aqi-gauge" width="200" height="140"></canvas>
+                            </div>
+                            <div class="status-details">
+                                <div class="detail-item">
+                                    <span class="label">AQI Level</span>
+                                    <span class="value value-large" id="aqi-value">25</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="label">Category</span>
+                                    <span class="value status-good" id="aqi-category">Good</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="label">Health Impact</span>
+                                    <span class="value-soft">
+                                        Ideal for outdoor activities
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card sensor-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Temperature</h3>
+                                <p class="card-subtitle">Ambient environment</p>
+                            </div>
+                            <span class="unit">°C</span>
+                        </div>
+                        <div class="card-body sensor-body">
+                            <div class="sensor-value sensor-value-glow" id="temp-value">
+                                28.5
+                            </div>
+                            <div class="sensor-trend">
+                                <span class="trend up">↑ 0.3°C</span>
+                                <span class="time-ago">last change: 5 min</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card sensor-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Humidity</h3>
+                                <p class="card-subtitle">Relative humidity</p>
+                            </div>
+                            <span class="unit">%</span>
+                        </div>
+                        <div class="card-body sensor-body">
+                            <div class="sensor-value sensor-value-glow" id="humidity-value">
+                                65.2
+                            </div>
+                            <div class="sensor-trend">
+                                <span class="trend down">↓ 1.2%</span>
+                                <span class="time-ago">last change: 5 min</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card sensor-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Raw Sensor</h3>
+                                <p class="card-subtitle">MQ135 baseline</p>
+                            </div>
+                            <span class="unit">Value</span>
+                        </div>
+                        <div class="card-body sensor-body">
+                            <div class="sensor-value sensor-value-glow" id="raw-value">
+                                425
+                            </div>
+                            <div class="sensor-trend">
+                                <span class="trend stable">→ Stable</span>
+                                <span class="time-ago">last change: 5 min</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Charts Section -->
+                <section class="charts-section">
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Real-time Air Quality Trends</h3>
+                                <p class="card-subtitle">
+                                    AQI vs time with smooth updates
+                                </p>
+                            </div>
+                            <div class="time-filter">
+                                <button class="time-btn active" data-hours="1">1H</button>
+                                <button class="time-btn" data-hours="6">6H</button>
+                                <button class="time-btn" data-hours="24">24H</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="trend-chart" class="chart-container"></div>
+                        </div>
+                    </div>
+
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Environmental Parameters</h3>
+                                <p class="card-subtitle">
+                                    Temperature & humidity correlation
+                                </p>
+                            </div>
+                            <div class="chart-legend">
+                                <span class="legend-item temp">Temperature</span>
+                                <span class="legend-item humidity">Humidity</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="environment-chart" class="chart-container"></div>
+                        </div>
+                    </div>
+                </section>
+                 <!-- Prediction Section -->
+                 <section class="charts-section">
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>AQI Forecast (Next 60 min)</h3>
+                                <p class="card-subtitle">
+                                    Data-driven prediction based on recent trend
+                                </p>
+                            </div>
+                            <button class="time-btn" id="run-forecast">Predict</button>
+                        </div>
+                        <div class="card-body">
+                            <div id="forecast-chart" class="chart-container"></div>
+                        </div>
+                    </div>
+                </section>
+                                
+                <!-- Data Tables and History -->
+                <section class="data-section">
+                    <div class="card data-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Recent Readings</h3>
+                                <p class="card-subtitle">
+                                    Latest samples from ThingSpeak / simulation
+                                </p>
+                            </div>
+                            <button class="export-btn" id="export-data">
+                                ⬇ Export CSV
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Timestamp</th>
+                                            <th>Temperature (°C)</th>
+                                            <th>Humidity (%)</th>
+                                            <th>Air Quality</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="readings-table">
+                                        <!-- Data populated by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card stats-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Statistics</h3>
+                                <p class="card-subtitle">
+                                    Aggregated metrics from loaded samples
+                                </p>
+                            </div>
+                            <span class="last-update">
+                                Updated: <span id="last-update">Just now</span>
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <span class="stat-label">Avg Temperature</span>
+                                    <span class="stat-value" id="avg-temp">28.3°C</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Avg Humidity</span>
+                                    <span class="stat-value" id="avg-humidity">64.8%</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Avg AQI</span>
+                                    <span class="stat-value" id="avg-aqi">23.5</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Readings Stored</span>
+                                    <span class="stat-value" id="readings-count">142</span>
+                                </div>
+                            </div>
+                            <div class="status-distribution">
+                                <h4>Status Distribution</h4>
+                                <div class="distribution-bars">
+                                    <div class="dist-bar good" style="width: 75%">
+                                        <span>Good: 75%</span>
+                                    </div>
+                                    <div class="dist-bar moderate" style="width: 20%">
+                                        <span>Moderate: 20%</span>
+                                    </div>
+                                    <div class="dist-bar poor" style="width: 5%">
+                                        <span>Poor: 5%</span>
+                                    </div>
+                                    <div class="dist-bar hazardous" style="width: 0%">
+                                        <span>Hazardous: 0%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <!-- Footer -->
+            <footer class="dashboard-footer">
+                <p>
+                    Air Quality Monitoring System • ESP32 + MQ135 + DHT11 • Data updates
+                    every 20 seconds
+                </p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="config.js"></script>
+    <script src="charts.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
