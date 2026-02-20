@@ -69,13 +69,27 @@ The system collects **real-time environmental data**, uploads it to the **cloud 
 
 ---
 
-## 📊 Dashboard Preview  
+---
 
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/00000000/dashboard-demo.gif" width="800">
-</p>
+## 🌍 Live IoT Dashboard  
 
-> *(Replace this with your actual dashboard screenshots / GIF)*
+<div align="center">
+
+<img src="https://img.shields.io/badge/Status-LIVE-success?style=for-the-badge&logo=vercel&logoColor=white" />
+
+<br>
+
+🚀 Experience Real-Time Air Quality Monitoring  
+
+👉 **[Open Live Dashboard](https://upendraprawal.github.io/Air-Quality-Monitoring-Dashboard/)**  
+
+<br>
+
+<a href="https://upendraprawal.github.io/Air-Quality-Monitoring-Dashboard/" target="_blank">
+  <img src="https://img.shields.io/badge/Launch%20Now-Air%20Quality%20Dashboard-00F7FF?style=for-the-badge&logo=google-chrome&logoColor=white" />
+</a>
+
+</div>
 
 ---
 
@@ -138,3 +152,4 @@ This project is licensed under the MIT License.
 
 
 [Sensors] → [ESP32] → [ThingSpeak Cloud] → [Web Dashboard] → [Live Visualization & Prediction]
+
