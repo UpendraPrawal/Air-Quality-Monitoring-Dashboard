@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🌍 Air Quality Monitoring & Prediction Dashboard
+#  Air Quality Monitoring & Prediction Dashboard
 
 ### Real-Time IoT Monitoring · AQI Classification · 60-Min Forecasting
 ### `ESP32` · `MQ135` · `DHT11` · `ThingSpeak` · `ApexCharts`
@@ -159,3 +159,4 @@ Released under the [MIT License](LICENSE).
 <div align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=0:00c9ff,100:0d3b6e&height=100&section=footer" />
 </div>
+
